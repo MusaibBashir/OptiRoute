@@ -7,6 +7,7 @@ import { Info, Zap, Trash2, Download, Upload } from "lucide-react"
 import GraphCanvas from "./graph-canvas"
 import ILPSolver from "./ilp-solver"
 import NodesPanel from "./nodes-panel"
+import logo from "./logo.png"
 
 interface Node {
   id: number
@@ -267,7 +268,7 @@ const BusStopOptimizer = () => {
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden">
                 <img
-                  src="logo.png"
+                  src={logo.src}
                   alt="Logo"
                   className="w-full h-full object-cover"
                 />
