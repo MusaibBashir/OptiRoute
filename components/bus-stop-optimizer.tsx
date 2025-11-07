@@ -276,7 +276,7 @@ const BusStopOptimizer = () => {
 
               <div>
                 <h1 className="text-2xl font-bold text-slate-900">OptiRoute</h1>
-                <p className="text-xs text-slate-500">Bus Stop Optimization</p>
+                <p className="text-xs text-slate-500">Project by: Musaib, Maadhav, Mayank, Kshitij</p>
               </div>
             </div>
             <button
@@ -439,9 +439,9 @@ const BusStopOptimizer = () => {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
               <p className="text-sm font-semibold text-slate-900">OptiRoute</p>
-              <p className="text-xs text-slate-500 mt-1">Powered by Operations Research</p>
+              <p className="text-xs text-slate-500 mt-1">Submitted under Prof. Akhilesh Kumar</p>
             </div>
-            <p className="text-xs text-slate-500">Optimize bus stop placements using Integer Linear Programming</p>
+            <p className="text-xs text-slate-500">Optimize bus stop placements using OR, Graph Theory and Greedy Algorithms</p>
           </div>
         </div>
       </footer>
