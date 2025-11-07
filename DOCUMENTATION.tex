@@ -1,0 +1,480 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage[utf-8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\lstset{
+    language=JavaScript,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{red},
+    breaklines=true,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    showstringspaces=false,
+    tabsize=2
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{OptiRoute Documentation}
+\lhead{Bus Stop Optimization}
+\cfoot{Page \thepage\ of \pageref{LastPage}}
+
+\title{\textbf{OptiRoute: Bus Stop Optimization System} \\ \large A Minimum Set Cover Problem Solver}
+\author{Operations Research Implementation}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+\section{Executive Summary}
+
+OptiRoute is a web-based operations research application that solves the Minimum Set Cover problem for optimal bus stop placement. The system enables users to design transportation networks and automatically determines the minimum number of bus stops required to cover all hostels within a specified walking distance constraint.
+
+\section{Problem Definition}
+
+\subsection{Problem Statement}
+
+Given a set of hostels and potential bus stop locations with known distances between them, find the minimum number of bus stops such that each hostel is within a maximum walking distance from at least one selected bus stop.
+
+\subsection{Mathematical Formulation}
+
+\subsubsection{Input Data}
+\begin{itemize}
+    \item $N = \{1, 2, \ldots, n\}$: Set of all nodes (hostels and potential bus stop locations)
+    \item $H \subseteq N$: Set of hostels that must be covered
+    \item $D \in \mathbb{R}^{n \times n}_{\geq 0}$: Distance matrix where $d_{ij}$ is the shortest path distance between nodes $i$ and $j$
+    \item $W \in \mathbb{R}_{> 0}$: Maximum walking distance threshold
+\end{itemize}
+
+\subsubsection{Decision Variables}
+
+$$x_i \in \{0, 1\} \quad \forall i \in N$$
+
+where $x_i = 1$ if bus stop $i$ is selected, and $x_i = 0$ otherwise.
+
+\subsubsection{Objective Function}
+
+Minimize the total number of bus stops selected:
+
+$$\min \sum_{i \in N} x_i$$
+
+\subsubsection{Constraints}
+
+For each hostel $j \in H$, at least one bus stop within walking distance must be selected:
+
+$$\sum_{i \in N : d_{ij} \leq W} x_i \geq 1 \quad \forall j \in H$$
+
+\subsection{Complexity Analysis}
+
+The Minimum Set Cover problem is NP-complete. The application employs a greedy approximation algorithm with the following characteristics:
+
+\begin{itemize}
+    \item \textbf{Approximation Ratio}: $O(\log n)$
+    \item \textbf{Time Complexity}: $O(n^3)$ for Floyd-Warshall shortest path computation
+    \item \textbf{Space Complexity}: $O(n^2)$ for distance matrix storage
+\end{itemize}
+
+\section{Solution Algorithm}
+
+\subsection{Floyd-Warshall Shortest Path Algorithm}
+
+The first step computes all-pairs shortest paths using Floyd-Warshall:
+
+\begin{lstlisting}
+for k in nodes:
+    for i in nodes:
+        for j in nodes:
+            dist[i][j] = min(dist[i][j], 
+                            dist[i][k] + dist[k][j])
+\end{lstlisting}
+
+\textbf{Time Complexity}: $O(n^3)$ where $n$ is the number of nodes.
+
+\subsection{Greedy Set Cover Algorithm}
+
+Given the coverage sets, the greedy algorithm iteratively selects the bus stop that covers the maximum number of uncovered hostels:
+
+\begin{enumerate}
+    \item Initialize: $S = \emptyset$ (selected stops), $U = H$ (uncovered hostels)
+    \item While $U \neq \emptyset$:
+    \begin{enumerate}
+        \item For each potential stop $i$, compute $\text{coverage}(i) = |\{j \in U : d_{ij} \leq W\}|$
+        \item Select stop $i^* = \arg\max_i \text{coverage}(i)$
+        \item Add $i^*$ to $S$
+        \item Remove all newly covered hostels from $U$
+    \end{enumerate}
+    \item Return $S$
+\end{enumerate}
+
+\textbf{Approximation Guarantee}: This greedy algorithm achieves $O(\log n)$ approximation ratio to the optimal solution.
+
+\section{System Architecture}
+
+\subsection{Technology Stack}
+
+\begin{itemize}
+    \item \textbf{Frontend Framework}: Next.js 16 with React 19
+    \item \textbf{Styling}: Tailwind CSS v4
+    \item \textbf{Graphics}: Canvas API for graph visualization
+    \item \textbf{Icons}: Lucide React
+    \item \textbf{Language}: TypeScript
+\end{itemize}
+
+\subsection{Component Structure}
+
+\subsubsection{BusStopOptimizer (Main Container)}
+Central component managing state for nodes, edges, solutions, and user interactions.
+
+\textbf{Key Responsibilities}:
+\begin{itemize}
+    \item Maintain graph state (nodes and edges)
+    \item Orchestrate solver execution
+    \item Manage UI mode (select, create node, create edge)
+    \item Handle data export functionality
+\end{itemize}
+
+\subsubsection{GraphCanvas (Visualization)}
+Renders the transportation network on an HTML5 canvas with interactive editing capabilities.
+
+\textbf{Features}:
+\begin{itemize}
+    \item Interactive node placement and dragging
+    \item Edge visualization with distance labels
+    \item Coverage circle visualization (green dashed circles)
+    \item Real-time visual feedback during editing
+\end{itemize}
+
+\subsubsection{ILPSolver (Control Panel)}
+Provides interface for solver configuration and results display.
+
+\textbf{Controls}:
+\begin{itemize}
+    \item Max walking distance input field
+    \item Solve button to execute algorithm
+    \item Solution results viewer
+\end{itemize}
+
+\subsubsection{NodesPanel (Data Management)}
+Lists and manages nodes and edges with editing capabilities.
+
+\textbf{Functionality}:
+\begin{itemize}
+    \item Display all nodes with color customization
+    \item Display all edges with distance editing
+    \item Delete nodes and edges
+    \item Rename nodes
+\end{itemize}
+
+\subsection{Data Structures}
+
+\subsubsection{Node Interface}
+\begin{lstlisting}
+interface Node {
+  id: number
+  name: string
+  x: number              // Canvas x-coordinate
+  y: number              // Canvas y-coordinate
+  type: string           // e.g., "hostel"
+  color?: string         // Optional color property
+}
+\end{lstlisting}
+
+\subsubsection{Edge Interface}
+\begin{lstlisting}
+interface Edge {
+  id: number
+  from: number           // Source node ID
+  to: number             // Target node ID
+  distance: number       // Edge weight in meters
+}
+\end{lstlisting}
+
+\subsubsection{Solution Interface}
+\begin{lstlisting}
+interface Solution {
+  numStops: number                    // Total stops selected
+  coverage: Record<number, string[]>  // Mapping of stop to covered hostels
+  allCovered: boolean                 // Coverage completeness flag
+  algorithm: string                   // Algorithm description
+}
+\end{lstlisting}
+
+\section{User Interface Guide}
+
+\subsection{Main Layout}
+
+The application is organized into four main regions:
+
+\begin{enumerate}
+    \item \textbf{Header}: Application title and info button
+    \item \textbf{Left Sidebar}: ILP Solver controls and results
+    \item \textbf{Center Canvas}: Graph visualization and editing
+    \item \textbf{Right Panel}: Node and edge management
+\end{enumerate}
+
+\subsection{Interaction Modes}
+
+\subsubsection{Select Mode}
+Default mode for viewing and selecting nodes.
+
+\textbf{Actions}:
+\begin{itemize}
+    \item Click node to select
+    \item Drag node to move position
+    \item View node information in right panel
+\end{itemize}
+
+\subsubsection{Create Node Mode}
+Activated to add new nodes to the graph.
+
+\textbf{Workflow}:
+\begin{enumerate}
+    \item Enter node name in input field
+    \item Click on canvas to place node
+    \item Node is automatically added with assigned ID
+\end{enumerate}
+
+\subsubsection{Create Edge Mode}
+Activated to connect two nodes.
+
+\textbf{Workflow}:
+\begin{enumerate}
+    \item Click first node to select source
+    \item Click second node to select target
+    \item Distance is calculated automatically based on coordinates
+\end{enumerate}
+
+\subsection{Solving Process}
+
+\begin{enumerate}
+    \item Set the \textbf{Max Walking Distance} parameter (in meters)
+    \item Click the \textbf{Solve ILP} button
+    \item Algorithm computes optimal bus stop placement
+    \item Green dashed circles appear around selected stops (coverage radius)
+    \item Results panel displays number of stops and covered hostels
+    \item Click \textbf{Export Solution} to download JSON file with solution
+\end{enumerate}
+
+\section{Key Features}
+
+\subsection{Interactive Graph Editing}
+
+Users can:
+\begin{itemize}
+    \item Create nodes by specifying coordinates and names
+    \item Remove nodes (cascading deletion of incident edges)
+    \item Create edges between nodes
+    \item Remove edges individually
+    \item Drag nodes to adjust positions
+    \item Rename nodes
+    \item Customize node colors
+    \item Edit edge distances
+\end{itemize}
+
+\subsection{Automatic Distance Calculation}
+
+When edges are created between two nodes, the Euclidean distance is automatically calculated:
+
+$$d_{ij} = \sqrt{(x_j - x_i)^2 + (y_j - y_i)^2}$$
+
+Users can manually adjust this value in the edge management panel.
+
+\subsection{Coverage Visualization}
+
+After solving, green dashed circles appear around selected bus stops, with radius equal to the maximum walking distance. This provides immediate visual feedback on coverage areas.
+
+\subsection{Solution Export}
+
+Solutions can be exported as JSON files containing:
+\begin{itemize}
+    \item Graph definition (nodes and edges)
+    \item Selected parameter (max walking distance)
+    \item Optimal solution (selected stops and coverage details)
+\end{itemize}
+
+\section{Algorithms in Detail}
+
+\subsection{Distance Calculation}
+
+The application combines direct edge weights with computed shortest paths:
+
+\begin{enumerate}
+    \item \textbf{Direct Edges}: Pre-defined distances between connected nodes
+    \item \textbf{Indirect Paths}: Computed using Floyd-Warshall algorithm
+    \item \textbf{Result}: Complete distance matrix for all node pairs
+\end{enumerate}
+
+\subsection{Coverage Computation}
+
+For each potential bus stop, the algorithm identifies all hostels within the walking distance:
+
+$$\text{coverage}(i) = \{j \in H : d_{ij} \leq W\}$$
+
+This is computed once after Floyd-Warshall completes.
+
+\subsection{Greedy Selection}
+
+The greedy algorithm repeatedly selects the stop covering the maximum number of uncovered hostels:
+
+$$x_i^{(t)} = \arg\max_{i} |\text{coverage}(i) \cap U^{(t-1)}|$$
+
+where $U^{(t)}$ is the set of uncovered hostels at iteration $t$.
+
+\section{Implementation Details}
+
+\subsection{State Management}
+
+The application uses React hooks for state management:
+
+\begin{itemize}
+    \item \textbf{nodes}: Array of Node objects
+    \item \textbf{edges}: Array of Edge objects
+    \item \textbf{maxWalkDistance}: Solver parameter (read-only after solving)
+    \item \textbf{inputWalkDistance}: User input for distance parameter
+    \item \textbf{optimalStops}: Array of selected stop IDs
+    \item \textbf{solution}: Computed Solution object or null
+    \item \textbf{mode}: Current interaction mode (select, create-node, create-edge)
+\end{itemize}
+
+\subsection{Event Handling}
+
+\subsubsection{Node Operations}
+\begin{itemize}
+    \item \textbf{onAddNode}: Creates new node at canvas coordinates
+    \item \textbf{onRemoveNode}: Deletes node and incident edges
+    \item \textbf{onUpdateNodePosition}: Updates coordinates on drag
+    \item \textbf{onUpdateNodeName}: Changes node label
+    \item \textbf{onUpdateNodeColor}: Customizes node appearance
+\end{itemize}
+
+\subsubsection{Edge Operations}
+\begin{itemize}
+    \item \textbf{onAddEdge}: Creates new edge with computed distance
+    \item \textbf{onRemoveEdge}: Deletes edge from graph
+    \item \textbf{onUpdateEdgeDistance}: Modifies edge weight
+\end{itemize}
+
+\subsubsection{Solver Operations}
+\begin{itemize}
+    \item \textbf{onSolve}: Executes algorithm and updates solution
+    \item \textbf{onClearSolution}: Resets solution and coverage visualization
+\end{itemize}
+
+\section{Performance Considerations}
+
+\subsection{Computational Complexity}
+
+For a graph with $n$ nodes:
+
+\begin{itemize}
+    \item \textbf{Floyd-Warshall}: $O(n^3)$ time, $O(n^2)$ space
+    \item \textbf{Coverage Computation}: $O(n^2)$ time
+    \item \textbf{Greedy Selection}: $O(n^2)$ time (worst case)
+    \item \textbf{Total}: $O(n^3)$ time complexity
+\end{itemize}
+
+\subsection{Optimization Strategies}
+
+\begin{enumerate}
+    \item Lazy evaluation of coverage sets (computed only when needed)
+    \item Canvas rendering optimization using requestAnimationFrame
+    \item Memoization of distance calculations
+\end{enumerate}
+
+\subsection{Scalability}
+
+The algorithm scales reasonably well for:
+\begin{itemize}
+    \item Up to 50-100 nodes: Real-time feedback
+    \item 100-500 nodes: Sub-second computation
+    \item Beyond 500 nodes: Significant computational overhead
+\end{itemize}
+
+\section{Example Scenario}
+
+\subsection{Sample Network}
+
+The default configuration includes 6 hostels:
+
+\begin{center}
+\begin{tabular}{cccc}
+\hline
+ID & Name & X & Y \\
+\hline
+1 & RP & 100 & 150 \\
+2 & RK & 250 & 200 \\
+3 & AZAD & 400 & 180 \\
+4 & SNIG & 550 & 220 \\
+5 & LBS & 350 & 350 \\
+6 & NALANDA & 500 & 380 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Sample Results}
+
+With maximum walking distance of 200 meters:
+
+\begin{itemize}
+    \item \textbf{Optimal Stops}: 3 bus stops
+    \item \textbf{Coverage}: All 6 hostels covered
+    \item \textbf{Algorithm}: Greedy approximation with Floyd-Warshall
+\end{itemize}
+
+\section{Limitations and Future Work}
+
+\subsection{Current Limitations}
+
+\begin{enumerate}
+    \item Graph must be connected for full coverage guarantee
+    \item No explicit time window or temporal constraints
+    \item No capacity constraints on buses
+    \item No consideration of demand at individual hostels
+\end{enumerate}
+
+\subsection{Future Enhancements}
+
+\begin{enumerate}
+    \item Implementation of exact ILP solver (branch-and-bound)
+    \item Multi-objective optimization (cost vs. coverage)
+    \item Real-world map integration
+    \item Demand-weighted optimization
+    \item Real-time routing and vehicle scheduling
+    \item Scenario comparison and sensitivity analysis
+\end{enumerate}
+
+\section{Conclusion}
+
+OptiRoute provides an accessible yet sophisticated tool for solving the Minimum Set Cover problem in transportation network design. By combining interactive visualization with robust algorithmic techniques, it enables urban planners and transportation managers to make informed decisions about bus stop placement while minimizing operational costs.
+
+The greedy approximation approach offers a good balance between solution quality and computational efficiency, making it suitable for practical planning applications.
+
+\appendix
+
+\section{Mathematical Notation Reference}
+
+\begin{itemize}
+    \item $N$: Set of all nodes
+    \item $H$: Set of hostels (demand points)
+    \item $d_{ij}$: Distance between nodes $i$ and $j$
+    \item $W$: Maximum walking distance (threshold)
+    \item $x_i$: Binary decision variable for selecting stop $i$
+    \item $U$: Set of uncovered hostels
+    \item $\log n$: Logarithm of problem size
+\end{itemize}
+
+\end{document}
