@@ -1,7 +1,9 @@
 "use client"
 
+import type React from "react"
+
 import { useState } from "react"
-import { Info, Zap, Trash2, Download } from "lucide-react"
+import { Info, Zap, Trash2, Download, Upload } from "lucide-react"
 import GraphCanvas from "./graph-canvas"
 import ILPSolver from "./ilp-solver"
 import NodesPanel from "./nodes-panel"
@@ -222,6 +224,40 @@ const BusStopOptimizer = () => {
     })
   }
 
+  const handleJsonUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      try {
+        const data = JSON.parse(e.target?.result as string)
+        if (data.nodes && data.edges) {
+          setNodes(data.nodes)
+          setEdges(data.edges)
+          if (data.maxWalkDistance) {
+            setMaxWalkDistance(data.maxWalkDistance)
+            setInputWalkDistance(data.maxWalkDistance)
+          }
+          if (data.solution) {
+            setSolution(data.solution)
+            // Extract optimal stops from solution coverage
+            const optimalStopsFromSolution = Object.keys(data.solution.coverage).map((id) => Number.parseInt(id))
+            setOptimalStops(optimalStopsFromSolution)
+          } else {
+            setOptimalStops([])
+            setSolution(null)
+          }
+          setSelectedNode(null)
+          setNewNodeName("")
+        }
+      } catch (error) {
+        alert("Error loading JSON file. Please ensure it has the correct format.")
+      }
+    }
+    reader.readAsText(file)
+  }
+
   return (
     <div className="min-h-screen">
       {/* Header */}
@@ -278,6 +314,20 @@ const BusStopOptimizer = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left Sidebar - ILP Solver only */}
           <div className="lg:col-span-2 space-y-6">
+            <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
+              <div className="p-4 border-b border-slate-200">
+                <h3 className="text-sm font-semibold text-slate-900">Load Network</h3>
+              </div>
+              <div className="p-4">
+                <label className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 rounded-lg hover:from-purple-700 hover:to-indigo-700 transition cursor-pointer font-semibold shadow-md hover:shadow-lg">
+                  <Upload size={18} />
+                  Upload JSON
+                  <input type="file" accept=".json" onChange={handleJsonUpload} className="hidden" />
+                </label>
+                <p className="text-xs text-slate-500 text-center mt-3">Upload a network with nodes & edges</p>
+              </div>
+            </div>
+
             <ILPSolver
               nodes={nodes}
               edges={edges}

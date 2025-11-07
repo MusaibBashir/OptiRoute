@@ -108,7 +108,7 @@ const GraphCanvas = ({
 
       const viewBox = svgElement.viewBox.baseVal
       const svgWidth = viewBox.width
-      const svgHeight = viewBox.baseVal.height
+      const svgHeight = viewBox.height
 
       let x = ((e.clientX - rect.left) / rect.width) * svgWidth
       let y = ((e.clientY - rect.top) / rect.height) * svgHeight
@@ -205,7 +205,8 @@ const GraphCanvas = ({
           onClick={handleSvgClick}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
-          className="cursor-crosshair"
+          onMouseLeave={handleMouseUp}
+          className={mode === "move" ? "cursor-grab active:cursor-grabbing" : "cursor-crosshair"}
         >
           {/* Grid */}
           <defs>
