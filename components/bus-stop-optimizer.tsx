@@ -265,9 +265,14 @@ const BusStopOptimizer = () => {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
-                <span className="text-white text-xl font-bold">OR</span>
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden">
+                <img
+                  src="/logo.png"
+                  alt="Logo"
+                  className="w-full h-full object-cover"
+                />
               </div>
+
               <div>
                 <h1 className="text-2xl font-bold text-slate-900">OptiRoute</h1>
                 <p className="text-xs text-slate-500">Bus Stop Optimization</p>
