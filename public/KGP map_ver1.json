@@ -1,0 +1,298 @@
+{
+  "nodes": [
+    {
+      "id": 1,
+      "name": "RP",
+      "x": 514,
+      "y": 506,
+      "type": "hostel",
+      "color": "#06b6d4"
+    },
+    {
+      "id": 2,
+      "name": "RK",
+      "x": 513,
+      "y": 404,
+      "type": "hostel",
+      "color": "#06b6d4"
+    },
+    {
+      "id": 3,
+      "name": "MS",
+      "x": 509,
+      "y": 319,
+      "type": "hostel",
+      "color": "#06b6d4"
+    },
+    {
+      "id": 4,
+      "name": "VS",
+      "x": 390,
+      "y": 250,
+      "type": "hostel",
+      "color": "#06b6d4"
+    },
+    {
+      "id": 5,
+      "name": "BCR",
+      "x": 367,
+      "y": 428,
+      "type": "hostel",
+      "color": "#06b6d4"
+    },
+    {
+      "id": 6,
+      "name": "LLR",
+      "x": 578,
+      "y": 210,
+      "type": "hostel",
+      "color": "#06b6d4"
+    },
+    {
+      "id": 7,
+      "name": "MMM",
+      "x": 573,
+      "y": 148,
+      "type": "hostel",
+      "color": "#06b6d4"
+    },
+    {
+      "id": 8,
+      "name": "LBS",
+      "x": 519,
+      "y": 87,
+      "type": "hostel",
+      "color": "#06b6d4"
+    },
+    {
+      "id": 9,
+      "name": "Patel",
+      "x": 384,
+      "y": 100,
+      "type": "hostel",
+      "color": "#06b6d4"
+    },
+    {
+      "id": 10,
+      "name": "Azad",
+      "x": 229,
+      "y": 78,
+      "type": "hostel",
+      "color": "#06b6d4"
+    },
+    {
+      "id": 11,
+      "name": "Nehru",
+      "x": 334,
+      "y": 46,
+      "type": "hostel",
+      "color": "#06b6d4"
+    },
+    {
+      "id": 12,
+      "name": "SNVH",
+      "x": 107,
+      "y": 186,
+      "type": "hostel",
+      "color": "#06b6d4"
+    },
+    {
+      "id": 13,
+      "name": "MT",
+      "x": 154,
+      "y": 322,
+      "type": "hostel",
+      "color": "#06b6d4"
+    },
+    {
+      "id": 14,
+      "name": "SNIG",
+      "x": 227,
+      "y": 379,
+      "type": "hostel",
+      "color": "#06b6d4"
+    },
+    {
+      "id": 15,
+      "name": "Nalanda",
+      "x": 97,
+      "y": 534,
+      "type": "hostel",
+      "color": "#a71616"
+    }
+  ],
+  "edges": [
+    {
+      "id": 1,
+      "from": 1,
+      "to": 2,
+      "distance": 102
+    },
+    {
+      "id": 2,
+      "from": 1,
+      "to": 5,
+      "distance": 166
+    },
+    {
+      "id": 3,
+      "from": 5,
+      "to": 14,
+      "distance": 148
+    },
+    {
+      "id": 4,
+      "from": 5,
+      "to": 4,
+      "distance": 179
+    },
+    {
+      "id": 5,
+      "from": 2,
+      "to": 3,
+      "distance": 85
+    },
+    {
+      "id": 6,
+      "from": 3,
+      "to": 6,
+      "distance": 129
+    },
+    {
+      "id": 7,
+      "from": 4,
+      "to": 6,
+      "distance": 192
+    },
+    {
+      "id": 8,
+      "from": 6,
+      "to": 7,
+      "distance": 62
+    },
+    {
+      "id": 9,
+      "from": 7,
+      "to": 8,
+      "distance": 81
+    },
+    {
+      "id": 10,
+      "from": 8,
+      "to": 9,
+      "distance": 136
+    },
+    {
+      "id": 11,
+      "from": 9,
+      "to": 11,
+      "distance": 74
+    },
+    {
+      "id": 12,
+      "from": 11,
+      "to": 10,
+      "distance": 110
+    },
+    {
+      "id": 13,
+      "from": 10,
+      "to": 9,
+      "distance": 157
+    },
+    {
+      "id": 14,
+      "from": 4,
+      "to": 12,
+      "distance": 290
+    },
+    {
+      "id": 15,
+      "from": 6,
+      "to": 12,
+      "distance": 472
+    },
+    {
+      "id": 16,
+      "from": 10,
+      "to": 12,
+      "distance": 163
+    },
+    {
+      "id": 17,
+      "from": 12,
+      "to": 13,
+      "distance": 144
+    },
+    {
+      "id": 18,
+      "from": 13,
+      "to": 14,
+      "distance": 93
+    },
+    {
+      "id": 19,
+      "from": 14,
+      "to": 15,
+      "distance": 202
+    },
+    {
+      "id": 20,
+      "from": 5,
+      "to": 15,
+      "distance": 290
+    },
+    {
+      "id": 21,
+      "from": 1,
+      "to": 15,
+      "distance": 418
+    },
+    {
+      "id": 22,
+      "from": 12,
+      "to": 15,
+      "distance": 348
+    },
+    {
+      "id": 23,
+      "from": 13,
+      "to": 15,
+      "distance": 220
+    }
+  ],
+  "maxWalkDistance": 300,
+  "solution": {
+    "numStops": 3,
+    "coverage": {
+      "5": [
+        "RP",
+        "RK",
+        "VS",
+        "BCR",
+        "MT",
+        "SNIG",
+        "Nalanda"
+      ],
+      "7": [
+        "RK",
+        "MS",
+        "VS",
+        "LLR",
+        "MMM",
+        "LBS",
+        "Patel",
+        "Nehru"
+      ],
+      "10": [
+        "LBS",
+        "Patel",
+        "Azad",
+        "Nehru",
+        "SNVH"
+      ]
+    },
+    "allCovered": true,
+    "algorithm": "ILP Set Cover (Greedy Approximation)"
+  }
+}
